@@ -1,0 +1,54 @@
+# ==============================================================================
+# Config do pipeline de MAGs a partir de nanopore (Flye+Medaka -> binning -> DAS Tool
+# -> loop GUNC/CheckM2 com Deepurify/MAGpurify2 -> tabela ENA)
+# ==============================================================================
+
+# Amostra(s): id -> caminho do fastq (pode ser .gz ou nao)
+samples:
+  minha_amostra: "/caminho/para/seus/reads_nanopore.fastq.gz"
+
+outdir: "/mnt/nvme2/mag_pipeline_runs"
+
+threads: 8
+
+# Caminhos dos ambientes conda (prefix completo, usados via `conda run -p`)
+envs:
+  flye:          "/mnt/nvme/conda_envs/flye_env"        # Flye + Medaka + minimap2
+  binning:       "/mnt/nvme/conda_envs/binning"          # MetaBAT2 + MaxBin2 + CONCOCT
+  vamb:          "/mnt/nvme/conda_envs/vamb310"          # VAMB + TaxVAMB
+  semibin:       "/mnt/nvme2/conda_envs_test/semibin_env"
+  metacoag:      "/mnt/nvme2/conda_envs_test/metacoag_env"
+  lrbinner:      "/mnt/nvme2/conda_envs_test/lrbinner_env"
+  dastool:       "/mnt/nvme2/conda_envs_test/dastool_env"
+  checkm2:       "/mnt/nvme2/conda_envs_test/checkm2_env"
+  gunc:          "/mnt/nvme/conda_envs/gunc_env"
+  deepurify:     "/mnt/nvme2/conda_envs_test/deepurify_env"
+  magpurify:     "/mnt/nvme/conda_envs/magpurify_env"
+  mmseqs2:       "/mnt/nvme/conda_envs/bioinfo"
+  barrnap:       "/mnt/nvme/conda_envs/icefinder_env"
+  genome_uploader: "/mnt/nvme2/conda_envs_test/genome_uploader_env"
+
+lrbinner_repo: "/mnt/nvme2/tools/LRBinner"
+
+# Bancos de dados
+db:
+  gunc_gtdb:   "/mnt/nvme2/gunc_db/gunc_db_gtdb95.dmnd"
+  checkm2:     "/mnt/nvme2/deepurify_db/Deepurify-DB/Checkm/checkm2_db.dmnd"
+  deepurify_db: "/mnt/nvme2/deepurify_db/Deepurify-DB"
+  # ATENCAO: Kalamari (pequeno, so validado mecanica do pipeline em teste) - trocar pelo GTDB real em producao:
+  #   mmseqs databases GTDB /mnt/nvme2/mmseqs2_gtdb_db/gtdb /mnt/nvme2/mmseqs2_gtdb_db/tmp --threads 8
+  mmseqs2_gtdb: "/mnt/nvme2/mmseqs2_test_db/kalamari"
+
+# Thresholds
+thresholds:
+  min_completeness: 50.0
+  max_contamination: 10.0
+  gunc_css_max: 0.45
+
+flye:
+  read_mode: "--nano-hq"   # use --nano-raw se os reads forem de basecaller antigo/menos preciso
+
+binning_min_contig_length: 1500
+
+# Threshold do DAS Tool (0.5 = default recomendado). So abaixe pra depurar dataset de teste minusculo.
+dastool_score_threshold: 0.5
