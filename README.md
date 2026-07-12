@@ -255,22 +255,24 @@ via its archived Zenodo record. Each tagged GitHub release is automatically
 archived on Zenodo with its own version-specific DOI; the badge at the top of
 this README always resolves to the latest one.
 
+> Cadamuro, R. D. (2026). *NanoPurify: a consensus-binning and
+> chimerism-aware MAG recovery pipeline for Oxford Nanopore metagenomes*
+> (v1.0.1). Zenodo. https://doi.org/10.5281/zenodo.21323199
+
 ```bibtex
 @software{cadamuro_nanopurify,
   author  = {Cadamuro, Rafael Dorighello},
   title   = {{NanoPurify: a consensus-binning and chimerism-aware
               MAG recovery pipeline for Oxford Nanopore metagenomes}},
   url     = {https://github.com/rdcadamuro/NanoPurify},
-  doi     = {10.5281/zenodo.PENDING},
-  version = {v1.0}
+  doi     = {10.5281/zenodo.21323199},
+  version = {v1.0.1},
+  year    = {2026}
 }
 ```
 
-Replace `10.5281/zenodo.PENDING` with the concept DOI (or the specific
-version DOI) shown on the Zenodo record once the v1.0 release has been
-archived. `CITATION.cff` in the repository root carries the same information
-in a machine-readable format and powers GitHub's "Cite this repository"
-button.
+`CITATION.cff` in the repository root carries the same information in a
+machine-readable format and powers GitHub's "Cite this repository" button.
 
 ## License
 
