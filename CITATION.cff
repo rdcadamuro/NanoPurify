@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "NanoPurify: a consensus-binning and chimerism-aware MAG recovery pipeline for Oxford Nanopore metagenomes"
+type: software
+authors:
+  - family-names: "Cadamuro"
+    given-names: "Rafael Dorighello"
+repository-code: "https://github.com/rdcadamuro/NanoPurify"
+url: "https://github.com/rdcadamuro/NanoPurify"
+license: MIT
+version: "1.0.0"
+date-released: "2026-07-12"

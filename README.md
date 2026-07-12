@@ -1,8 +1,13 @@
 # NanoPurify
 
+[![DOI](https://zenodo.org/badge/1298314004.svg)](https://zenodo.org/badge/latestdoi/1298314004)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **A consensus-binning and chimerism-aware decontamination pipeline for recovering
 metagenome-assembled genomes (MAGs) from Oxford Nanopore metagenomic sequencing,
 ending in an ENA-submission-ready metadata table.**
+
+Built and organized by **PhD Rafael Dorighello Cadamuro**.
 
 NanoPurify orchestrates an ensemble of eight independent binners behind DAS Tool,
 then runs a GUNC-driven decision loop (Deepurify → MAGpurify2) to clean up
@@ -25,6 +30,7 @@ tools — no third-party source code is vendored here. See
 - [Outputs](#outputs)
 - [Design notes](#design-notes)
 - [Software and citations](#software-and-citations)
+- [Citing NanoPurify](#citing-nanopurify)
 - [License](#license)
 
 ## Pipeline overview
@@ -240,6 +246,31 @@ scientific results produced with these tools.
 | Reference taxonomy | [GTDB](https://gtdb.ecogenomic.org/) | r95 (GUNC db) | Parks et al. 2022, *Nucleic Acids Res.* 50(D1):D785–D794 | [10.1093/nar/gkab776](https://doi.org/10.1093/nar/gkab776) |
 | ENA submission | [genome_uploader](https://github.com/EBI-Metagenomics/genome_uploader) | 3.0.2 | EBI-Metagenomics (no dedicated tool publication; cite the GitHub repository) | — |
 | Orchestration | [Snakemake](https://github.com/snakemake/snakemake) | ≥9 | Mölder et al. 2021, *F1000Research* 10:33 | [10.12688/f1000research.29032.2](https://doi.org/10.12688/f1000research.29032.2) |
+
+## Citing NanoPurify
+
+If NanoPurify (the orchestration pipeline itself, as opposed to the individual
+tools it calls — see the table above) was useful in your work, please cite it
+via its archived Zenodo record. Each tagged GitHub release is automatically
+archived on Zenodo with its own version-specific DOI; the badge at the top of
+this README always resolves to the latest one.
+
+```bibtex
+@software{cadamuro_nanopurify,
+  author  = {Cadamuro, Rafael Dorighello},
+  title   = {{NanoPurify: a consensus-binning and chimerism-aware
+              MAG recovery pipeline for Oxford Nanopore metagenomes}},
+  url     = {https://github.com/rdcadamuro/NanoPurify},
+  doi     = {10.5281/zenodo.PENDING},
+  version = {v1.0}
+}
+```
+
+Replace `10.5281/zenodo.PENDING` with the concept DOI (or the specific
+version DOI) shown on the Zenodo record once the v1.0 release has been
+archived. `CITATION.cff` in the repository root carries the same information
+in a machine-readable format and powers GitHub's "Cite this repository"
+button.
 
 ## License
 
