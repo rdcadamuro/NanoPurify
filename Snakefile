@@ -79,7 +79,17 @@ rule depth_jgi:
     output:
         depth=str(OUT / "{sample}" / "mapping" / "depth.txt")
     shell:
-        run_in("binning", "jgi_summarize_bam_contig_depths --outputDepth {output.depth} {input.bam}")
+        # --percentIdentity default e 97% (end-to-end) -- calibrado pra Illumina.
+        # Reads longos (nanopore) acumulam indel/erro ao longo do comprimento e
+        # quase nunca batem 97% ponta-a-ponta, mesmo com boa qualidade real;
+        # o resultado e quase todo read "nao qualificado" descartado em
+        # silencio. Confirmado num contig real: depth reportado 0.02x vs
+        # 26.74x medido direto via 'samtools depth' no mesmo BAM (>1000x de
+        # diferenca). Com --percentIdentity 80 o valor recuperado bate ~91%
+        # do real; MetaBAT2/MetaCoAG (os unicos binners deste pipeline que
+        # consomem este arquivo -- VAMB calcula a propria cobertura direto
+        # do BAM) estavam binando com sinal de abundancia essencialmente ruido.
+        run_in("binning", "jgi_summarize_bam_contig_depths --percentIdentity 80 --outputDepth {output.depth} {input.bam}")
 
 # ------------------------------------------------------------------
 # 4a. MetaBAT2
