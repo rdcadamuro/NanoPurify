@@ -300,7 +300,7 @@ rule contig2bin_metacoag:
 rule contig2bin_lrbinner:
     input: str(OUT / "{sample}" / "binning" / "lrbinner" / "DONE")
     output: str(OUT / "{sample}" / "contig2bin" / "lrbinner.tsv")
-    params: bindir=lambda wc: str(OUT / wc.sample / "binning" / "lrbinner" / "binned")
+    params: bindir=lambda wc: str(OUT / wc.sample / "binning" / "lrbinner" / "binned_contigs")
     shell:
         "(" + run_in("dastool", "Fasta_to_Contig2Bin.sh -e fasta -i {params.bindir}") + " > {output}) || true ; touch {output}"
 
@@ -323,9 +323,17 @@ rule contig2bin_taxvamb:
         "awk -F'\\t' 'NR>1{{print $2\"\\t\"$1}}' {input} > {output}"
 
 # ------------------------------------------------------------------
-# 6. DAS Tool: consolida os 8 binners
+# 6. DAS Tool: consolida os binners (7 de 8 -- taxvamb excluido)
 # ------------------------------------------------------------------
-BINNER_NAMES = ["metabat2", "maxbin2", "concoct", "vamb", "taxvamb",
+# taxvamb precisa de um banco mmseqs2/GTDB completo (config db.mmseqs2_gtdb).
+# O download do GTDB completo travou/crashou em rodadas anteriores deste
+# projeto (fora deste repo) -- por decisao explicita, essa etapa fica de fora
+# por enquanto (GTDB-Tk roda depois, separadamente, num sistema online).
+# Como BINNER_NAMES controla o expand() de inputs do DAS Tool, remover
+# "taxvamb" daqui desliga toda a cadeia mmseqs_taxonomy -> convert_taxonomy_for_vamb
+# -> taxvamb do DAG (nada mais depende dela), sem precisar guardar/comentar
+# as rules individualmente.
+BINNER_NAMES = ["metabat2", "maxbin2", "concoct", "vamb",
                 "semibin2", "metacoag", "lrbinner"]
 
 rule dastool:
