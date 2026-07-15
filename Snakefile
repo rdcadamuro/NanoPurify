@@ -79,7 +79,17 @@ rule depth_jgi:
     output:
         depth=str(OUT / "{sample}" / "mapping" / "depth.txt")
     shell:
-        run_in("binning", "jgi_summarize_bam_contig_depths --outputDepth {output.depth} {input.bam}")
+        # --percentIdentity default e 97% (end-to-end) -- calibrado pra Illumina.
+        # Reads longos (nanopore) acumulam indel/erro ao longo do comprimento e
+        # quase nunca batem 97% ponta-a-ponta, mesmo com boa qualidade real;
+        # o resultado e quase todo read "nao qualificado" descartado em
+        # silencio. Confirmado num contig real: depth reportado 0.02x vs
+        # 26.74x medido direto via 'samtools depth' no mesmo BAM (>1000x de
+        # diferenca). Com --percentIdentity 80 o valor recuperado bate ~91%
+        # do real; MetaBAT2/MetaCoAG (os unicos binners deste pipeline que
+        # consomem este arquivo -- VAMB calcula a propria cobertura direto
+        # do BAM) estavam binando com sinal de abundancia essencialmente ruido.
+        run_in("binning", "jgi_summarize_bam_contig_depths --percentIdentity 80 --outputDepth {output.depth} {input.bam}")
 
 # ------------------------------------------------------------------
 # 4a. MetaBAT2
@@ -300,7 +310,7 @@ rule contig2bin_metacoag:
 rule contig2bin_lrbinner:
     input: str(OUT / "{sample}" / "binning" / "lrbinner" / "DONE")
     output: str(OUT / "{sample}" / "contig2bin" / "lrbinner.tsv")
-    params: bindir=lambda wc: str(OUT / wc.sample / "binning" / "lrbinner" / "binned")
+    params: bindir=lambda wc: str(OUT / wc.sample / "binning" / "lrbinner" / "binned_contigs")
     shell:
         "(" + run_in("dastool", "Fasta_to_Contig2Bin.sh -e fasta -i {params.bindir}") + " > {output}) || true ; touch {output}"
 
@@ -323,9 +333,17 @@ rule contig2bin_taxvamb:
         "awk -F'\\t' 'NR>1{{print $2\"\\t\"$1}}' {input} > {output}"
 
 # ------------------------------------------------------------------
-# 6. DAS Tool: consolida os 8 binners
+# 6. DAS Tool: consolida os binners (7 de 8 -- taxvamb excluido)
 # ------------------------------------------------------------------
-BINNER_NAMES = ["metabat2", "maxbin2", "concoct", "vamb", "taxvamb",
+# taxvamb precisa de um banco mmseqs2/GTDB completo (config db.mmseqs2_gtdb).
+# O download do GTDB completo travou/crashou em rodadas anteriores deste
+# projeto (fora deste repo) -- por decisao explicita, essa etapa fica de fora
+# por enquanto (GTDB-Tk roda depois, separadamente, num sistema online).
+# Como BINNER_NAMES controla o expand() de inputs do DAS Tool, remover
+# "taxvamb" daqui desliga toda a cadeia mmseqs_taxonomy -> convert_taxonomy_for_vamb
+# -> taxvamb do DAG (nada mais depende dela), sem precisar guardar/comentar
+# as rules individualmente.
+BINNER_NAMES = ["metabat2", "maxbin2", "concoct", "vamb",
                 "semibin2", "metacoag", "lrbinner"]
 
 rule dastool:

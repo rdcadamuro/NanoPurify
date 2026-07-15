@@ -30,7 +30,7 @@ COLUMNS = [
 ]
 
 BINNING_SOFTWARE = ("MetaBAT2_v2.18;MaxBin2_v2.2.7;CONCOCT_v1.1.0;VAMB_v5.0.4;"
-                     "TaxVAMB_v5.0.4;SemiBin2_v2.3.0;MetaCoAG_v1.2.2;"
+                     "SemiBin2_v2.3.0;MetaCoAG_v1.2.2;"
                      "LRBinner;DAS_Tool_v1.1.7")
 BINNING_PARAMETERS = "default parameters; consenso via DAS_Tool (score_threshold=0.5)"
 ASSEMBLY_SOFTWARE = "Flye_v2.9.6;Medaka_v2.1.1"
